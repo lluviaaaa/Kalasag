@@ -218,3 +218,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Kalasag Project Specifics
+
+# 1. Datasets and Large CSVs
+*.csv
+/data/
+# (Raw CICIDS2017 CSVs are too large for Git and should be kept in a shared Drive or Kaggle)
+
+# 2. Virtual Machine Images
+*.vdi
+*.ova
+*.vmdk
+*.iso
+# (Prevents heavy Attacker/Victim VM files from being uploaded)[cite: 1]
+
+# 3. Saved Machine Learning Models
+*.pkl
+*.pickle
+*.joblib
+# (Prevents saved trained models and scaler objects from bloating the repository)[cite: 1]
+
+# 4. Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
