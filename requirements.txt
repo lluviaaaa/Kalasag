@@ -1,0 +1,19 @@
+# Version ranges for now. After everyone installs successfully, run
+#   pip freeze > requirements.lock.txt
+# and commit it so all 3 laptops match exactly (PRD Section 10, Reproducibility).
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+imbalanced-learn>=0.11
+xgboost>=2.0
+lightgbm>=4.0
+shap>=0.44
+matplotlib>=3.7
+seaborn>=0.13
+plotly>=5.18
+joblib>=1.3
+streamlit>=1.30
+pytest>=7.4
+jupyter>=1.0
+# Optional (MLP comparison, PRD Step 17): tensorflow or torch
+# Optional (live capture scripting, Member 3): scapy

@@ -1,0 +1,12 @@
+{
+  "_comment": "Member 1 fills this in at Step 6/8 from the real dataset. Member 3 depends on it at Step 26.",
+  "version": 1,
+  "label_column": "TO_CONFIRM",
+  "label_classes": ["BENIGN"],
+  "excluded_columns": [],
+  "features": [
+    {"name": "TO_CONFIRM", "dtype": "float64", "description": "fill from real dataset"}
+  ],
+  "scaler_file": "models/scaler.pkl",
+  "label_encoder_file": "models/label_encoder.pkl"
+}

@@ -224,7 +224,6 @@ __marimo__/
 
 # 1. Datasets and Large CSVs
 *.csv
-/data/
 # (Raw CICIDS2017 CSVs are too large for Git and should be kept in a shared Drive or Kaggle)
 
 # 2. Virtual Machine Images
@@ -242,3 +241,40 @@ __marimo__/
 
 # 4. Jupyter Notebook Checkpoints
 .ipynb_checkpoints/
+
+# Data (too large for Git; share via Drive/Kaggle link, see docs/handoffs)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/schema/
+
+# Models (large binaries). Small files can be force-added: git add -f
+models/*.pkl
+models/*.joblib
+models/*.h5
+!models/metrics/
+
+# Notebooks / Python
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# VMs and captures (never commit these)
+*.ova
+*.vdi
+*.vmdk
+*.pcap
+*.pcapng
+lab/capture_tooling/logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
