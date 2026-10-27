@@ -15,5 +15,6 @@ joblib>=1.3
 streamlit>=1.30
 pytest>=7.4
 jupyter>=1.0
+pyarrow>=14.0
 # Optional (MLP comparison, PRD Step 17): tensorflow or torch
 # Optional (live capture scripting, Member 3): scapy
