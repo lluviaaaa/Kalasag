@@ -301,3 +301,50 @@ Tick the boxes as each milestone is finished.
 - Maheshwari, A. (2020). *Data Analytics Made Accessible.* Chapter 4: Data Mining.
 - CICIDS2017 official page: https://www.unb.ca/cic/datasets/ids-2017.html
 - Dataset used: https://www.kaggle.com/datasets/ericanacletoribeiro/cicids2017-cleaned-and-preprocessed
+
+
+## Python Development Environment
+
+Kalasag uses Python 3.13.3 as the initial development environment.
+
+### Requirements
+- Python 3.13.3
+- Git
+- pip
+- VS Code (recommended)
+
+### Windows Setup
+
+1. Clone the repository and open the Kalasag folder.
+2. Create a virtual environment:
+
+   python -m venv .venv
+
+3. Activate the environment in PowerShell:
+
+   .\.venv\Scripts\Activate.ps1
+
+4. Install the pinned dependencies:
+
+   python -m pip install -r requirements.lock.txt
+
+5. Verify dependency compatibility:
+
+   python -m pip check
+
+6. Run the project tests:
+
+   python -m pytest
+
+### Dependency Management
+
+- `requirements.txt` lists the project's direct dependencies.
+- `requirements.lock.txt` records the exact installed package versions.
+- Use the lock file for consistent installations.
+- Do not commit the `.venv` directory.
+- Test dependency changes before updating the lock file.
+
+### Reproducibility
+
+The initial environment was prepared using Python 3.13.3 on Windows. The dependency lock file is intended to support reproducible setup across team members. Compatibility on other machines and platforms must be verified separately.
+
