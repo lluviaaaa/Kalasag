@@ -1,7 +1,7 @@
 {
   "version": 2,
   "dataset": "CICIDS2017 Cleaned and Preprocessed",
-  "total_rows": 2520751,
+  "total_rows": 2520590,
   "total_columns": 53,
   "label_column": "Attack Type",
   "label_classes": [
