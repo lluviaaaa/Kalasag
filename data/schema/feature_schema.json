@@ -199,30 +199,6 @@
     {
       "name": "min_seg_size_forward",
       "dtype": "int64"
-    },
-    {
-      "name": "Active Mean",
-      "dtype": "float64"
-    },
-    {
-      "name": "Active Max",
-      "dtype": "int64"
-    },
-    {
-      "name": "Active Min",
-      "dtype": "int64"
-    },
-    {
-      "name": "Idle Mean",
-      "dtype": "float64"
-    },
-    {
-      "name": "Idle Max",
-      "dtype": "int64"
-    },
-    {
-      "name": "Idle Min",
-      "dtype": "int64"
     }
   ],
   "scaler_file": "models/scaler.pkl",
