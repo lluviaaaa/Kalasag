@@ -2,7 +2,7 @@ import pathlib
 
 pkg = pathlib.Path.home() / 'cfm-work/venv/lib/python3.12/site-packages/cicflowmeter'
 PAYLOAD = '(len(packet["TCP"].payload) if "TCP" in packet else (len(packet["UDP"].payload) if "UDP" in packet else 0))'
-HEADER = '(packet["TCP"].dataofs * 4 if "TCP" in packet and packet["TCP"].dataofs else (8 if "UDP" in packet else 0))'
+HEADER = '(packet["TCP"].dataofs * 4 if "TCP" in packet and packet["TCP"].dataofs else (20 if "UDP" in packet else 0))'
 
 f_flow = pkg / 'flow.py'
 t = f_flow.read_text()

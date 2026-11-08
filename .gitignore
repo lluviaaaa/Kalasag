@@ -278,3 +278,6 @@ lab/capture_tooling/logs/
 Thumbs.db
 .vscode/
 .idea/
+runtime/
+*.ova
+*.vdi
