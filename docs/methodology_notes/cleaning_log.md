@@ -58,3 +58,40 @@
 The cleaned dataset contains 2,520,590 records and 53 columns, including the target label. Validation confirmed zero missing values, zero infinite values, and zero exact duplicates.
 
 The cleaned dataset was saved to `data/interim/cleaned.parquet` for subsequent analysis and preprocessing.
+
+
+## 7. Additional Negative-Value Cleaning
+
+Following the team's review, 12 numerical features were identified as containing negative values.
+
+Two TCP window features were excluded from negative-value filtering because they legitimately use -1 as a sentinel value:
+
+- Init_Win_bytes_forward
+- Init_Win_bytes_backward
+
+The remaining numerical features were checked for negative values.
+
+### Results
+
+| Attack Type | Removed Rows |
+|---|---:|
+| Normal Traffic | 2,721 |
+| DoS | 163 |
+| DDoS | 19 |
+| Brute Force | 6 |
+| **Total** | **2,909** |
+
+- Records before additional filtering: 2,520,590
+- Invalid records identified: 2,909 (approximately 0.1154%)
+- Records after filtering: 2,517,681
+- Attack classes preserved: 7
+
+### Cleaning Decision
+
+With the project lead's approval, the team decided to exclude the 2,909 records containing invalid negative values.
+
+The filtering function was implemented in `src/preprocessing/pipeline.py` and integrated into Notebook 03 before feature selection and dataset splitting.
+
+The original raw dataset and initial cleaned Parquet file remain unchanged.
+
+**Status:** Filtering logic implemented and tested. Regeneration of processed datasets and scaler pending.

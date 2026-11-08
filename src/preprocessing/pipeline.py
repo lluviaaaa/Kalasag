@@ -62,3 +62,22 @@ def smote_train_only(X_train_scaled, y_train, floor=10000, seed=SEED):
     )
 
     return smote.fit_resample(X_train_scaled, y_train)
+
+
+def remove_invalid_negative_rows(df):
+    allowed_negative_columns = {
+        "Init_Win_bytes_backward",
+        "Init_Win_bytes_forward",
+    }
+
+    numeric = df.select_dtypes(include="number")
+    check_columns = [
+        col for col in numeric.columns
+        if col not in allowed_negative_columns
+    ]
+
+    invalid_mask = (numeric[check_columns] < 0).any(axis=1)
+
+    cleaned = df.loc[~invalid_mask].copy()
+
+    return cleaned, int(invalid_mask.sum())
