@@ -32,6 +32,41 @@ Other required project artifacts:
 
 Only regenerated files were uploaded. Old local backups were excluded.
 
+## Preprocessing Environment
+
+The following versions were used to generate the preprocessing artifacts:
+
+- Python: 3.13.3
+- scikit-learn: 1.9.1
+- imbalanced-learn: 0.14.2
+- joblib: 1.6.0
+
+Use compatible versions when loading the saved scaler and label encoder.
+
+## Live-Layer Preprocessing Rules
+
+The live traffic monitoring system must apply these rules before scaling:
+
+1. **Time Conversion**
+   - Multiply Flow Duration and the 14 IAT features by 1,000,000.
+   - This converts seconds into microseconds to match the training dataset.
+
+2. **TCP Flag Conversion**
+   - For FIN, PSH, and ACK Flag Count, convert any value greater than 0 to 1.
+   - Keep zero values as 0.
+
+3. **TCP Window Values**
+   - Do not modify Init_Win_bytes_forward or Init_Win_bytes_backward.
+   - A value of -1 is valid when no TCP packet was observed.
+
+4. **Approximate Features**
+   - UDP header lengths and min_seg_size_forward may differ from training values.
+   - The live tool uses an approximate header length of 20, while training data may contain 20 or 32.
+
+5. **Feature Consistency**
+   - Use the exact 46 features in feature_schema.json.
+   - Preserve their order before applying the saved scaler.
+
 ## 2. Dataset Cleaning Summary
 
 | Processing stage | Records |
@@ -112,6 +147,40 @@ SMOTE was applied exclusively to the training dataset, with a minimum target of 
 | | **Total** | **1,783,111** |
 
 The validation and test datasets were not resampled.
+
+## Dataset Verification Script
+
+Run the following code from the Kalasag project root with the processed files in their expected folders.
+
+```python
+import joblib
+import pandas as pd
+
+scaler = joblib.load("models/scaler.pkl")
+train = pd.read_parquet("data/processed/train_scaled.parquet")
+
+print("Dataset shape:", train.shape)
+print("Class distribution:")
+print(train["label"].value_counts().sort_index())
+
+print(
+    "Largest absolute feature mean:",
+    train.drop(columns="label").mean().abs().max()
+)
+
+assert train.shape == (1762376, 47)
+assert len(scaler.feature_names_in_) == 46
+
+print("Verification passed!")
+```
+
+Expected results:
+- Dataset shape: (1762376, 47)
+- Seven attack classes
+- Largest absolute feature mean approximately 0
+- Verification passed!
+
+The scaler must be loaded using a compatible scikit-learn version.
 
 ## 6. Validation Results
 
