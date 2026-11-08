@@ -1,7 +1,7 @@
 # Feature-Label Conflict Investigation
 
-**Project:** Kalasag  
-**Dataset:** CICIDS2017 Cleaned CSV  
+**Project:** Kalasag
+**Dataset:** CICIDS2017 Cleaned CSV
 **Investigation:** Feature overlap and conflicting class labels
 
 ## 1. Background
