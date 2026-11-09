@@ -14,7 +14,7 @@
     "Web Attacks"
   ],
   "excluded_columns": [],
-  "feature_count": 52,
+  "feature_count": 46,
   "features": [
     {
       "name": "Destination Port",
