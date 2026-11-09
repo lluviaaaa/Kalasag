@@ -96,11 +96,32 @@ The trained models were evaluated using CPU inference to assess their potential 
 | XGBoost | 15.731684 ms | 17.285937 ms | 0.052439 ms |
 | Random Forest | 38.847260 ms | 41.608186 ms | 0.129491 ms |
 
+
 All four models remained below the project's target of 100 milliseconds per record based on the recorded benchmark.
 
 Random Forest had the highest inference time, while Decision Tree had the lowest.
 
 XGBoost provided a balance between detection performance and inference speed.
+
+
+### Final XGBoost Single-Record Inference Benchmark
+
+An additional CPU inference benchmark was conducted using the selected XGBoost model to measure the time required to make an individual prediction.
+
+The benchmark was repeated 100 times.
+
+| Measurement | Result |
+|---|---:|
+| Number of repetitions | 100 |
+| Median inference time | 4.4272 ms |
+| Mean inference time | 5.2784 ms |
+
+The results show that the selected XGBoost model can produce individual predictions within a few milliseconds under the tested environment.
+
+This benchmark measures model prediction time only. It does not represent the total processing time of the complete live detection pipeline.
+
+
+
 
 ## 5. Feature Importance Analysis
 
@@ -149,6 +170,33 @@ Feature importance was examined for Random Forest and XGBoost to identify which 
 Bwd Packet Length Std ranked first in both models. Destination Port also appeared among the top 15 features in both models.
 
 Feature importance indicates how much a model uses a feature. It does not independently establish a causal relationship between that feature and an attack.
+
+
+### SHAP Explainability Analysis
+
+SHAP (SHapley Additive exPlanations) was used to further examine the contribution of input features to the XGBoost model's predictions.
+
+The analysis was performed using 500 validation records and all 46 input features. The resulting SHAP values had a shape of (500, 46, 7), representing 500 records, 46 features, and 7 target classes.
+
+The top features based on mean absolute SHAP values were:
+
+| Rank | Feature | Mean Absolute SHAP Value |
+|---:|---|---:|
+| 1 | Destination Port | 2.873783 |
+| 2 | Init_Win_bytes_forward | 1.246348 |
+| 3 | min_seg_size_forward | 0.976831 |
+| 4 | Init_Win_bytes_backward | 0.647468 |
+| 5 | Fwd IAT Min | 0.618400 |
+| 6 | Packet Length Std | 0.606323 |
+| 7 | Bwd IAT Std | 0.451499 |
+| 8 | Fwd IAT Std | 0.450125 |
+| 9 | Bwd Packets/s | 0.425260 |
+| 10 | Bwd Packet Length Std | 0.392254 |
+
+Destination Port had the highest mean absolute SHAP value, indicating a strong contribution to the model's predictions across the analyzed records.
+
+These results provide additional information about how the model uses its input features. SHAP values describe feature contributions to model predictions and do not establish causal relationships.
+
 
 ## 6. Destination Port Ablation Experiment
 
@@ -206,42 +254,68 @@ However, the overlap investigation does not independently establish data leakage
 
 No records or labels were manually changed or removed. The findings were documented as a potential dataset limitation.
 
-## 8. Model Recommendation
 
-Based on the validation results, XGBoost is recommended as the leading candidate for the final model.
+## 8. Final Model Recommendation
 
-Reasons:
+Based on the validation comparison and final test evaluation, XGBoost was selected as the final model for the Kalasag intrusion detection system.
 
-1. Highest Attack Recall among the evaluated models at 0.9990.
-2. Highest Macro Recall at 0.9809.
-3. Strong Macro F1 of 0.9661.
-4. Low False Positive Rate of 0.0009.
-5. Shortest training time among the four models.
-6. Lower CPU inference latency than Random Forest.
+The reasons for selecting XGBoost include:
 
-Random Forest remains a strong alternative because it achieved the highest Macro F1-score of 0.9674.
+1. It achieved the highest validation Macro Recall of 0.9809.
+2. It achieved the highest validation Attack Recall of 0.9990.
+3. It obtained a strong validation Macro F1-score of 0.9661.
+4. It achieved a low validation False Positive Rate of 0.0009.
+5. It had the shortest training time among the four evaluated models at 37.65 seconds.
+6. It demonstrated strong performance during the final test evaluation, achieving a Macro F1-score of 0.9630 and Macro Recall of 0.9821.
 
-The final model selection remains subject to team discussion and approval.
+Although Random Forest achieved a slightly higher validation Macro F1-score of 0.9674, XGBoost provided a strong balance of detection performance, training efficiency, and inference speed.
 
-## 9. Pending Work
+The final evaluation supports the selection of XGBoost as the model for the Kalasag system.
 
-The following activities remain subject to team coordination:
 
-- Confirm the final model selection with the team.
-- Obtain approval before opening the prepared test dataset.
-- Evaluate the selected model on the test dataset only once.
-- Record final test metrics, per-class results, and confusion matrix.
-- Complete any agreed final explainability analysis.
-- Integrate the approved results into the project's Results chapter.
+## 9. Final Test Evaluation
 
-The test dataset was not used in the experiments documented above.
+After model selection, the selected XGBoost model was evaluated using the prepared test dataset. The test dataset was opened only once and was not used for model training, tuning, or model selection.
+
+### Final Test Results
+
+| Metric | Result |
+|---|---:|
+| Accuracy | 0.9990 |
+| Macro Precision | 0.9485 |
+| Macro Recall | 0.9821 |
+| Macro F1 | 0.9630 |
+| Weighted F1 | 0.9990 |
+| Macro FPR | 0.0003 |
+
+The results demonstrate strong overall classification performance on the held-out test dataset.
+
+The model achieved high macro recall and a low false positive rate. However, performance varied across classes, particularly for Bots.
+
+### Per-Class Observations
+
+The Bots class showed weaker performance compared with the other classes. Some Bot records were classified as Normal Traffic, while some Normal Traffic records were classified as Bots.
+
+This indicates that minority-class detection remains an area for improvement despite the model's strong overall performance.
+
+### Final Evaluation Status
+
+The final test evaluation has been completed. No additional test evaluation or model tuning was performed using the held-out test dataset.
+
+
+
+
 
 ## 10. Conclusion
 
-The validation experiments show that Random Forest and XGBoost are strong candidates for the Kalasag intrusion detection system.
+The model development experiments evaluated four machine learning algorithms for the Kalasag intrusion detection system: Decision Tree, Logistic Regression, Random Forest, and XGBoost.
 
-Random Forest achieved the highest Macro F1-score, while XGBoost provided the highest Macro Recall and Attack Recall with considerably lower training and CPU inference times than Random Forest.
+The validation results showed that Random Forest achieved the highest Macro F1-score of 0.9674, while XGBoost achieved the highest Macro Recall of 0.9809 and Attack Recall of 0.9990. XGBoost also had the shortest training time among the evaluated models.
 
-The Destination Port ablation experiment supports retaining the feature in the 46-feature configuration.
+Following model selection, XGBoost achieved a final test Macro F1-score of 0.9630, Macro Recall of 0.9821, and False Positive Rate of 0.0003.
 
-XGBoost is therefore recommended as the leading candidate, pending final team approval and the one-time test evaluation.
+The Destination Port ablation experiment supported retaining the feature in the 46-feature configuration. Feature importance and SHAP analysis also provided information about the features contributing to model predictions.
+
+The single-record CPU inference benchmark recorded a median prediction time of 4.4272 milliseconds across 100 repetitions.
+
+Overall, the results support XGBoost as the selected model for the Kalasag intrusion detection system. The model demonstrated strong classification performance and promising prediction speed under the tested conditions. Further system-level testing is still necessary to evaluate its performance within the complete live detection pipeline.
