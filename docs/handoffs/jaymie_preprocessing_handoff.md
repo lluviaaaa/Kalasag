@@ -230,3 +230,16 @@ Mapping verified against `models/label_encoder.pkl`.
 - Do not mix artifacts from earlier preprocessing runs with the regenerated files.
 
 **Handoff status:** Regenerated files uploaded to Google Drive. Recipient access and successful loading pending confirmation.
+
+## Conflicting-Label Analysis
+
+Analysis of `data/interim/cleaned.parquet` (2,520,590 records) after excluding the six Active/Idle features found:
+
+- 3 additional duplicate rows using 46 features plus label.
+- 697 distinct feature combinations with conflicting labels.
+- 1,394 rows involved (0.0553%).
+- Normal Traffic + Port Scanning: 564 combinations.
+- DoS + Normal Traffic: 130 combinations.
+- DDoS + Normal Traffic: 3 combinations.
+
+These findings describe the intermediate cleaned dataset before the additional negative-value filtering. No records were removed specifically because of these conflicts. The existing processed datasets were preserved.
