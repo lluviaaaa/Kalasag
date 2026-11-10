@@ -51,3 +51,8 @@ Multiply the 15 time features by 1,000,000 (seconds to microseconds). Any flag c
     requests==2.34.2
     scapy==2.8.0
     scipy==1.18.1
+
+## Update (Nov 10, 2026): Ethernet padding fix (fix_padding.py)
+- Lab capture of an hping3 SYN flood (/tmp/lab.pcap) showed 5,653 of 13,166 packets where Scapy's len(packet["TCP"].payload) included 6 bytes of Ethernet zero-padding on 54-byte frames.
+- Updated features/flow_bytes.py and features/packet_length.py (and tools/cicflowmeter/cicflowmeter-0.4.2-kalasag.patch) to compute payload from the IP total length field: max(0, IP.len - IP.ihl*4 - L4_header_len).
+- Re-verified with tools/check_padding.py (0 mismatches).

@@ -1,12 +1,12 @@
 diff -ruN a/features/flow_bytes.py b/features/flow_bytes.py
---- a/features/flow_bytes.py	2026-11-08 16:02:37.252900988 +0800
-+++ b/features/flow_bytes.py	2026-11-08 16:02:37.269760884 +0800
+--- a/features/flow_bytes.py	2026-11-10 18:49:17.657522355 +0800
++++ b/features/flow_bytes.py	2026-11-10 18:49:17.666453687 +0800
 @@ -17,7 +17,7 @@
              int: The amount of bytes.
  
          """
 -        return sum(len(packet) for packet, _ in self.flow.packets)
-+        return sum((len(packet["TCP"].payload) if "TCP" in packet else (len(packet["UDP"].payload) if "UDP" in packet else 0)) for packet, _ in self.flow.packets)
++        return sum((max(0, packet["IP"].len - packet["IP"].ihl * 4 - (packet["TCP"].dataofs * 4 if "TCP" in packet else 8)) if "IP" in packet and ("TCP" in packet or "UDP" in packet) else 0) for packet, _ in self.flow.packets)
  
      def get_rate(self) -> float:
          """Calculates the rate of the bytes being transfered in the current flow.
@@ -15,7 +15,7 @@ diff -ruN a/features/flow_bytes.py b/features/flow_bytes.py
          """
          return sum(
 -            len(packet)
-+            (len(packet["TCP"].payload) if "TCP" in packet else (len(packet["UDP"].payload) if "UDP" in packet else 0))
++            (max(0, packet["IP"].len - packet["IP"].ihl * 4 - (packet["TCP"].dataofs * 4 if "TCP" in packet else 8)) if "IP" in packet and ("TCP" in packet or "UDP" in packet) else 0)
              for packet, direction in self.flow.packets
              if direction == PacketDirection.FORWARD
          )
@@ -24,7 +24,7 @@ diff -ruN a/features/flow_bytes.py b/features/flow_bytes.py
  
          return sum(
 -            len(packet)
-+            (len(packet["TCP"].payload) if "TCP" in packet else (len(packet["UDP"].payload) if "UDP" in packet else 0))
++            (max(0, packet["IP"].len - packet["IP"].ihl * 4 - (packet["TCP"].dataofs * 4 if "TCP" in packet else 8)) if "IP" in packet and ("TCP" in packet or "UDP" in packet) else 0)
              for packet, direction in packets
              if direction == PacketDirection.REVERSE
          )
@@ -50,19 +50,19 @@ diff -ruN a/features/flow_bytes.py b/features/flow_bytes.py
      def get_reverse_header_bytes(self) -> int:
          """Calculates the amount of header bytes in the header sent in the opposite direction as the flow.
 diff -ruN a/features/packet_length.py b/features/packet_length.py
---- a/features/packet_length.py	2026-11-08 16:02:37.253777237 +0800
-+++ b/features/packet_length.py	2026-11-08 16:02:37.270367073 +0800
+--- a/features/packet_length.py	2026-11-10 18:49:17.657758004 +0800
++++ b/features/packet_length.py	2026-11-10 18:49:17.666689952 +0800
 @@ -26,11 +26,11 @@
          """
          if packet_direction is not None:
              return [
 -                len(packet)
-+                (len(packet["TCP"].payload) if "TCP" in packet else (len(packet["UDP"].payload) if "UDP" in packet else 0))
++                (max(0, packet["IP"].len - packet["IP"].ihl * 4 - (packet["TCP"].dataofs * 4 if "TCP" in packet else 8)) if "IP" in packet and ("TCP" in packet or "UDP" in packet) else 0)
                  for packet, direction in self.flow.packets
                  if direction == packet_direction
              ]
 -        return [len(packet) for packet, _ in self.flow.packets]
-+        return [(len(packet["TCP"].payload) if "TCP" in packet else (len(packet["UDP"].payload) if "UDP" in packet else 0)) for packet, _ in self.flow.packets]
++        return [(max(0, packet["IP"].len - packet["IP"].ihl * 4 - (packet["TCP"].dataofs * 4 if "TCP" in packet else 8)) if "IP" in packet and ("TCP" in packet or "UDP" in packet) else 0) for packet, _ in self.flow.packets]
  
      def get_header_length(self, packet_direction=None) -> list:
          """Creates a list of packet lengths.
@@ -81,8 +81,8 @@ diff -ruN a/features/packet_length.py b/features/packet_length.py
      def get_total_header(self, packet_direction=None) -> int:
          """Calculates the summary header lengths.
 diff -ruN a/flow.py b/flow.py
---- a/flow.py	2026-11-08 16:02:37.249145524 +0800
-+++ b/flow.py	2026-11-08 16:02:37.267307599 +0800
+--- a/flow.py	2026-11-10 18:49:17.656126659 +0800
++++ b/flow.py	2026-11-10 18:49:17.664591011 +0800
 @@ -29,14 +29,14 @@
          ) = get_packet_flow_key(packet, direction)
  
@@ -110,8 +110,8 @@ diff -ruN a/flow.py b/flow.py
  
          # Note: start_timestamp and protocol are set in __init__
 diff -ruN a/utils.py b/utils.py
---- a/utils.py	2026-11-08 16:02:37.251416032 +0800
-+++ b/utils.py	2026-11-08 16:02:37.268474520 +0800
+--- a/utils.py	2026-11-10 18:49:17.656563043 +0800
++++ b/utils.py	2026-11-10 18:49:17.665677294 +0800
 @@ -32,7 +32,7 @@
      iat = dict()
      alist = [float(x) for x in alist]
