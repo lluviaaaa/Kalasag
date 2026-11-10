@@ -28,4 +28,19 @@ When traffic is classified as an attack, record an alert and display a simulated
 - Sample flow records for the offline demo
 
 ## Current Status
-The dashboard and capture module still need implementation. The live demo depends on the team's model and feature schema being ready.
+
+### Implemented
+- Offline dashboard for prepared sample flow classification.
+- Live feature conversion from CICFlowMeter output to the agreed 46-feature training schema.
+- CSV-based flow classification using the trained model, scaler, and label encoder.
+- Simulated response that records alerts and simulated blocks without executing firewall commands.
+- CICFlowMeter 0.4.2 setup and feature patch validation.
+
+### Pending Validation
+- Continuous packet capture within the isolated VirtualBox lab network.
+- End-to-end processing of browser-generated traffic from the Victim VM.
+- Verification that live predictions and alerts appear in the dashboard.
+- Controlled attack traffic testing and detection verification.
+
+### Safety
+All live testing must remain within the isolated lab network. Simulated blocking must not execute real firewall commands.
