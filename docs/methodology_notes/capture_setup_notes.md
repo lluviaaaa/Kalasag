@@ -40,7 +40,7 @@ Multiply the 15 time features by 1,000,000 (seconds to microseconds). Any flag c
 ## Known limits
 - One Wi-Fi capture of browsing, no attack traffic yet.
 - UDP header length and min_seg_size_forward are approximate (training mixes 20 and 32).
-- Ethernet padding on very small frames is untested.
+- The Ethernet padding correction was verified with tools/check_padding.py (0 mismatches) on the documented capture; full lab capture validation is pending.
 - Flows can run past 120 s (longest seen 143 s; training stops at 120 s).
 - Zero-duration flows: 22 of 543, all single-packet, with rates of 0 (not NaN or infinity).
 

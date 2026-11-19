@@ -245,3 +245,71 @@ Random Forest achieved the highest Macro F1-score, while XGBoost provided the hi
 The Destination Port ablation experiment supports retaining the feature in the 46-feature configuration.
 
 XGBoost is therefore recommended as the leading candidate, pending final team approval and the one-time test evaluation.
+
+## 11. Clean Model Reproduction Run (November 19, 2026)
+
+A clean model reproduction was conducted using the new notebook `05_model_training.ipynb`.
+
+The purpose was to verify the training and validation results using the prepared datasets without changing the existing data splits, scaler, or SMOTE processing.
+
+### Dataset Verification
+
+| Dataset | Shape |
+|---|---|
+| Training features | 1,783,111 rows × 46 features |
+| Training labels | 1,783,111 rows |
+| Validation features | 377,652 rows × 46 features |
+| Validation labels | 377,652 rows |
+
+The prepared training and validation datasets were reused. No new splitting, scaling, or SMOTE operation was performed. The test dataset was not opened or evaluated during this reproduction run.
+
+### Reproduced Training Times
+
+| Model | Training Time |
+|---|---:|
+| Decision Tree | 109.43 seconds |
+| Logistic Regression | 96.32 seconds |
+| Random Forest | 379.95 seconds |
+| XGBoost | 35.74 seconds |
+
+The validation metrics were consistent with the results recorded in Section 3, subject to rounding.
+
+### Updated CPU Inference Benchmark
+
+The updated benchmark used 300 validation records across 10 repetitions. XGBoost inference was benchmarked using a CPU-configured copy of the trained model.
+
+| Model | Median Total Time | Mean Total Time | Median Time per Record |
+|---|---:|---:|---:|
+| Logistic Regression | 1.716638 ms | 1.906803 ms | 0.005722 ms |
+| Decision Tree | 5.702554 ms | 5.554997 ms | 0.019009 ms |
+| XGBoost | 27.593101 ms | 29.452042 ms | 0.091977 ms |
+| Random Forest | 52.589287 ms | 55.769704 ms | 0.175298 ms |
+
+All four models remained below the project's target of 100 milliseconds per record in this benchmark.
+
+### Runtime Environment
+
+The clean reproduction was conducted in Google Colab using the following package versions:
+
+| Package | Version |
+|---|---|
+| Python | 3.13 |
+| pandas | 2.2.3 |
+| NumPy | 2.4.6 |
+| scikit-learn | 1.6.1 |
+| imbalanced-learn | 0.14.2 |
+| joblib | 1.6.0 |
+| pyarrow | 23.0.1 |
+| XGBoost | 3.4.1 |
+
+The Colab environment did not exactly match the versions in the repository's `requirements.lock.txt`. This should be considered when reproducing the experiment in another environment.
+
+### Notes and Limitations
+
+- All four models were trained and saved in the reproduction output folder in Google Drive.
+- XGBoost displayed a CPU/GPU device mismatch warning during prediction because the trained model used GPU acceleration while the validation input was on CPU. Prediction continued using a fallback path.
+- The updated CPU latency benchmark used a CPU-configured copy of XGBoost to avoid changing the saved GPU-trained model.
+- The test dataset was not accessed during this clean reproduction.
+- Previously recorded test results remain historical results and were not reproduced in this run.
+
+This reproduction provides updated training-time and CPU-latency measurements while preserving the existing validation results. Final model selection and test evaluation remain subject to team approval.
