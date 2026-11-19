@@ -64,3 +64,7 @@ These values require further investigation before deciding whether to retain, co
 Dataset inspection completed. No cleaning transformations have been applied to the original CSV.
 
 The next stage will follow Part 5 of the Kalasag Data Processing Guide.
+
+## Subsequent Cleaning Outcome
+
+This document records the initial audit of 2,520,751 source records. Its 2,910 suspicious-negative-row count was measured before exact duplicate removal. The later preprocessing stage removed 161 exact duplicates, then identified and excluded 2,909 invalid-negative records, leaving 2,517,681 model-ready records. See `cleaning_log.md` for the finalized filtering results.
