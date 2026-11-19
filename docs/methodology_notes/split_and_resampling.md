@@ -10,10 +10,13 @@ The preprocessing pipeline follows this sequence:
 
 The pipeline was designed to maintain consistency between offline model training and live network traffic detection while minimizing data leakage.
 
+
+**Processing-stage clarification:** The intermediate cleaned dataset contained 2,520,590 records after duplicate removal. Notebook 03 excluded 2,909 records with invalid negative measurements, leaving 2,517,681 records for splitting. The two TCP window-size features were exempt from negative-value filtering because `-1` is a valid sentinel value.
+
 ## 2. Dataset Information
 
 - Source: Cleaned CICIDS2017 dataset
-- Total records: 2,520,590
+- Total records after negative-value filtering: 2,517,681
 - Original numerical input features: 52
 - Final selected numerical input features: 46
 - Target column: `Attack Type`
@@ -65,10 +68,10 @@ The dataset was divided using stratified random sampling with `random_state=42`,
 
 | Dataset | Percentage | Records |
 |---|---|---|
-| Training | 70% | 1,764,413 |
-| Validation | 15% | 378,088 |
-| Testing | 15% | 378,089 |
-| **Total** | **100%** | **2,520,590** |
+| Training | 70% | 1,762,376 |
+| Validation | 15% | 377,652 |
+| Testing | 15% | 377,653 |
+| **Total** | **100%** | **2,517,681** |
 
 Assertions confirmed that the training, validation, and testing sets contain no overlapping original row indices.
 
@@ -117,15 +120,15 @@ Partial oversampling was performed using SMOTE with the following settings:
 | Class | Before SMOTE | After SMOTE |
 |---|---:|---:|
 | Bots | 1,364 | 10,000 |
-| Brute Force | 6,405 | 10,000 |
-| DDoS | 89,610 | 89,610 |
-| DoS | 135,621 | 135,621 |
-| Normal Traffic | 1,466,427 | 1,466,427 |
+| Brute Force | 6,401 | 10,000 |
+| DDoS | 89,596 | 89,596 |
+| DoS | 135,507 | 135,507 |
+| Normal Traffic | 1,464,522 | 1,464,522 |
 | Port Scanning | 63,486 | 63,486 |
 | Web Attacks | 1,500 | 10,000 |
-| **Total** | **1,764,413** | **1,785,144** |
+| **Total** | **1,762,376** | **1,783,111** |
 
-SMOTE generated 20,731 additional synthetic training records.
+SMOTE generated 20,735 additional synthetic training records.
 
 The oversampling strategy intentionally avoided fully balancing all classes. A sampling floor of 10,000 was selected as an initial setting for comparison during model development.
 
@@ -135,10 +138,10 @@ The following datasets were saved in `data/processed/`:
 
 | File | Records | Description |
 |---|---:|---|
-| `train_scaled.parquet` | 1,764,413 | Scaled original training records |
-| `train_smote_floor10000.parquet` | 1,785,144 | Scaled training records with synthetic samples |
-| `val_scaled.parquet` | 378,088 | Scaled validation records |
-| `test_scaled.parquet` | 378,089 | Scaled testing records |
+| `train_scaled.parquet` | 1,762,376 | Scaled original training records |
+| `train_smote_floor10000.parquet` | 1,783,111 | Scaled training records with synthetic samples |
+| `val_scaled.parquet` | 377,652 | Scaled validation records |
+| `test_scaled.parquet` | 377,653 | Scaled testing records |
 
 Each processed dataset contains:
 

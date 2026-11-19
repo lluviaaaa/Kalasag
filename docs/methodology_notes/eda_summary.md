@@ -99,3 +99,7 @@ The following figures were generated:
 The cleaned CICIDS2017 dataset contains substantial class imbalance, strongly correlated features, skewed numerical distributions, and potentially anomalous negative measurements.
 
 These findings provide a basis for subsequent feature preparation and model development. No additional cleaning, feature elimination, or resampling was performed during EDA.
+
+## Subsequent Preprocessing Outcome
+
+The statistics and visualizations above describe the intermediate cleaned dataset of 2,520,590 records and 52 numerical features. Subsequent model preparation excluded six Active/Idle features and removed 2,909 invalid-negative records, producing 2,517,681 records with 46 selected features. These later changes do not retroactively alter the EDA results.
