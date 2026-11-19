@@ -28,4 +28,4 @@ When traffic is classified as an attack, record an alert and display a simulated
 - Sample flow records for the offline demo
 
 ## Current Status
-The dashboard and capture module still need implementation. The live demo depends on the team's model and feature schema being ready.
+This document is an initial demo plan, not a current implementation report. The preprocessing team has approved the 46-feature schema and provided the fitted scaler and processed datasets. The current status of dashboard implementation, capture integration, and end-to-end live detection must be confirmed with the systems and model leads before marking the live demo complete.

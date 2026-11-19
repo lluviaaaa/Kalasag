@@ -4,7 +4,7 @@
 
 *Kalasag* is Filipino for "shield." It is a machine-learning system that looks at network traffic and decides whether each piece of it is **normal** or **an attack**. It is an undergraduate thesis project built by a 3-member team, using the CICIDS2017 (Cleaned & Preprocessed) dataset from Kaggle.
 
-> **Safety rule (read this first):** Live capture runs **only** on our own isolated VirtualBox lab network. Blocking is **simulated** inside the lab VM and never touches a real network. Never capture on, or run attacks against, a shared home or school network, or anyone else's traffic.
+> **Safety rule (read this first):** Live capture runs **only** on our own isolated VirtualBox lab network. Each team member must capture only traffic from their own authorized laptop, VM, and selected network interface; never capture another person's devices or traffic. Blocking is **simulated** inside the lab VM and never touches a real network. Never capture on, or run attacks against, a shared home or school network, or anyone else's traffic.
 
 ---
 
@@ -65,10 +65,10 @@ We claim **near real-time**, and we back it with the latency we actually measure
    (split BEFORE resampling)                                          |
           |                                                           v
           v                                              Map to the training feature schema
-   Resample TRAIN only, scale                            and apply the SAVED scaler
+   Scale (fit on TRAIN only)                            and apply the SAVED scaler
           |                                                           |
           v                                                           |
-   Train and compare models                                           |
+   SMOTE TRAIN only; train models                                           |
           |                                                           |
           +-----------------> Trained model <-------------------------+
                                     |
@@ -170,7 +170,7 @@ Some folders only contain a `.gitkeep` placeholder for now. They fill up as the 
 
 | Member | Role | Owns |
 |---|---|---|
-| Member 1 (name TBD) | Data & Preprocessing Lead | Phases 0 to 3: `data/`, `src/preprocessing/`, notebooks 01 to 03 |
+| Jaymie Aquino | Data & Preprocessing Lead | Phases 0 to 3: `data/`, `src/preprocessing/`, notebooks 01 to 03 |
 | Aleah | Model Development Lead | Phases 4 to 5: `src/modeling/`, `models/`, notebooks 04 to 07 |
 | Pou | Systems & Demo Lead | Phases 6 to 7: `lab/`, `src/capture/`, `src/response/`, `dashboard/` |
 | All | Shared | Phase 8 (documentation), `docs/`, `tests/`, and code review |
@@ -224,7 +224,7 @@ Download **CICIDS2017 - Cleaned & Preprocessed** from Kaggle (`ericanacletoribei
 pytest
 ```
 
-Early on, most tests are placeholders that skip. They are filled in as each pipeline step is built.
+The preprocessing test suite currently reports 10 passed and 2 skipped tests (November 2026). Skipped integrations remain unverified.
 
 ---
 
@@ -290,7 +290,7 @@ We follow the six-step **CRISP-DM** process from *Data Analytics Made Accessible
 | 15 | Adviser review and revisions | [ ] |
 | 16 | Defense preparation and demo rehearsal | [ ] |
 
-Tick the boxes as each milestone is finished.
+Roadmap checkboxes represent confirmed completed milestones only. The 46-feature preprocessing pipeline and dataset handoff have been completed, while end-to-end live capture, model integration, and demonstration milestones require separate verification.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-This document evaluates the feasibility of extracting the 52 CICIDS2017 input features from live network traffic for the Kalasag intrusion detection system.
+This document originally evaluated the feasibility of extracting the 52 CICIDS2017 input features from live network traffic for the Kalasag intrusion detection system.
 
 The objective is to ensure that the features used during model training can also be reproduced during live traffic classification.
 
@@ -125,3 +125,30 @@ However, **live compatibility has not yet been validated**. Features requiring C
 5. Update the schema and documentation if feature compatibility issues are discovered.
 
 **Status:** Preliminary assessment completed; live-capture verification pending.
+
+## 8. Updated Feature Selection Decision (November 2026)
+
+This document's 52-feature table records the original feasibility assessment,
+not the final modeling configuration.
+
+The team subsequently excluded six Active/Idle features because the live
+feature-extraction implementation did not reproduce them reliably:
+
+- Active Mean
+- Active Max
+- Active Min
+- Idle Mean
+- Idle Max
+- Idle Min
+
+The approved modeling schema now contains 46 input features, including
+`Destination Port`. The authoritative feature names and order are maintained
+in `data/schema/feature_schema.json`.
+
+This decision resolves the original feature-selection question but does not
+establish that the entire live detection pipeline has passed end-to-end
+integration testing. Feature calculation compatibility and live inference
+must still be verified against the final trained model.
+
+**Updated status:** Historical 52-feature assessment retained for reference;
+46-feature schema approved; full live integration verification outstanding.
