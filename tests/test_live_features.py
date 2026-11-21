@@ -1,61 +1,38 @@
-
 import numpy as np
 import pandas as pd
-import pytest
-
 from sklearn.preprocessing import StandardScaler
-from src.preprocessing.artifacts import prepare_live_features
+
+from src.live.convert import (
+    COLUMN_MAP,
+    apply_live_rules,
+    to_scaled,
+    tool_to_training_frame,
+)
+from src.preprocessing.artifacts import convert_live_features
 
 
-def test_live_features_follow_schema_order():
-    schema = {
-        "features": [
-            {"name": "feature_a"},
-            {"name": "feature_b"},
-        ]
-    }
+def fake_tool_output():
+    rng = np.random.default_rng(1)
+    raw = pd.DataFrame(
+        rng.uniform(1, 10, size=(3, len(COLUMN_MAP))),
+        columns=list(COLUMN_MAP),
+    )
+    raw["src_ip"] = "10.10.10.3"
+    return raw
 
-    train = pd.DataFrame({
-        "feature_a": [1.0, 2.0, 3.0],
-        "feature_b": [10.0, 20.0, 30.0],
-    })
 
-    scaler = StandardScaler().fit(train)
+def test_convert_live_features_uses_live_converter():
+    raw = fake_tool_output()
 
-    raw = pd.DataFrame({
-        "feature_b": [20.0],
-        "feature_a": [2.0],
-    })
-
-    result = prepare_live_features(raw, schema, scaler)
-
-    expected = scaler.transform(
-        pd.DataFrame({
-            "feature_a": [2.0],
-            "feature_b": [20.0],
-        })
+    training_features = apply_live_rules(
+        tool_to_training_frame(raw)
     )
 
-    assert list(result.columns) == ["feature_a", "feature_b"]
-    np.testing.assert_allclose(result.to_numpy(), expected)
+    scaler = StandardScaler().fit(training_features)
 
+    result, usable = convert_live_features(raw, scaler)
+    expected, expected_usable = to_scaled(raw, scaler)
 
-def test_live_features_reject_missing_columns():
-    schema = {
-        "features": [
-            {"name": "feature_a"},
-            {"name": "feature_b"},
-        ]
-    }
-
-    train = pd.DataFrame({
-        "feature_a": [1.0, 2.0],
-        "feature_b": [3.0, 4.0],
-    })
-
-    scaler = StandardScaler().fit(train)
-
-    raw = pd.DataFrame({"feature_a": [1.5]})
-
-    with pytest.raises(ValueError, match="Missing feature columns"):
-        prepare_live_features(raw, schema, scaler)
+    assert list(result.columns) == list(scaler.feature_names_in_)
+    assert usable.tolist() == expected_usable.tolist()
+    np.testing.assert_allclose(result.to_numpy(), expected.to_numpy())
