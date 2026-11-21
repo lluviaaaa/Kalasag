@@ -244,7 +244,7 @@ Random Forest achieved the highest Macro F1-score, while XGBoost provided the hi
 
 The Destination Port ablation experiment supports retaining the feature in the 46-feature configuration.
 
-XGBoost is therefore recommended as the leading candidate, pending final team approval and the one-time test evaluation.
+XGBoost is therefore recommended as the leading candidate, pending final team approval and acceptance of the historical test evaluation documented in Section 12.
 
 ## 11. Clean Model Reproduction Run (November 19, 2026)
 
@@ -312,4 +312,70 @@ The Colab environment did not exactly match the versions in the repository's `re
 - The test dataset was not accessed during this clean reproduction.
 - Previously recorded test results remain historical results and were not reproduced in this run.
 
-This reproduction provides updated training-time and CPU-latency measurements while preserving the existing validation results. Final model selection and test evaluation remain subject to team approval.
+This reproduction provides updated training-time and CPU-latency measurements while preserving the existing validation results. Final model selection and acceptance of the historical test evaluation remain subject to team approval.
+
+## 12. Historical XGBoost Test Evaluation
+
+A one-time XGBoost test evaluation was previously performed using the prepared test dataset. The recorded notebook outputs were recovered from the historical model-training notebook.
+
+This evaluation is separate from the clean model reproduction documented in Section 11. The November 19 reproduction used training and validation data only and did not repeat the test evaluation.
+
+### Test Dataset Verification
+
+| Item | Recorded Result |
+|---|---|
+| Test dataset shape | 377,653 rows × 47 columns |
+| Input features | 46 |
+| Target column | label |
+| Feature order | Matched the XGBoost model's expected feature order |
+| Evaluation model | XGBoost |
+| Test evaluation | Completed once |
+
+The historical notebook recorded the following test dataset path:
+
+`/content/drive/MyDrive/kalasag/processed/test_scaled.parquet`
+
+A separate earlier path was checked and reported as unavailable. The path above was confirmed to exist and was used to load the test dataset in the recorded execution. The official team-approved Drive location should still be confirmed.
+
+### Overall Test Results
+
+| Metric | Result |
+|---|---:|
+| Accuracy | 0.9990 |
+| Macro F1 | 0.9630 |
+| Macro Recall | 0.9821 |
+| Macro Precision | 0.9485 |
+| Macro False Positive Rate | 0.0003 |
+
+The Macro False Positive Rate was calculated using a one-vs-rest approach and averaged across the seven classes.
+
+### Per-Class Test Results
+
+| Class | Precision | Recall | F1-Score | Support |
+|---|---:|---:|---:|---:|
+| Bots | 0.6718 | 0.8973 | 0.7683 | 292 |
+| Brute Force | 0.9993 | 0.9985 | 0.9989 | 1,371 |
+| DDoS | 1.0000 | 0.9996 | 0.9998 | 19,200 |
+| DoS | 0.9986 | 0.9993 | 0.9990 | 29,038 |
+| Normal Traffic | 0.9998 | 0.9990 | 0.9994 | 313,827 |
+| Port Scanning | 0.9889 | 0.9995 | 0.9942 | 13,604 |
+| Web Attacks | 0.9813 | 0.9813 | 0.9813 | 321 |
+
+### Test Result Artifacts
+
+The historical notebook outputs confirmed that the following files were successfully saved in the Google Drive model results folder:
+
+- `xgboost_test_confusion_matrix.csv`
+- `xgboost_test_normalized_confusion_matrix.csv`
+- `xgboost_test_normalized_confusion_matrix.png`
+- `xgboost_test_classification_report.csv`
+
+The notebook also recorded a successful handoff check for `final_model.joblib`.
+
+### Notes and Limitations
+
+- These results are recovered from the saved outputs of the historical notebook execution.
+- The test evaluation must not be repeated merely to reproduce these numbers.
+- The historical notebook displayed an XGBoost CPU/GPU device mismatch warning during prediction. Prediction nevertheless completed and produced the recorded metrics.
+- Bots had the lowest F1-score at 0.7683, indicating weaker classification performance for this minority class compared with the other classes.
+- The official acceptance of this historical evaluation and confirmation of its dataset lineage remain subject to team review.
