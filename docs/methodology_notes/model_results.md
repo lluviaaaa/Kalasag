@@ -304,6 +304,16 @@ The clean reproduction was conducted in Google Colab using the following package
 
 The Colab environment did not exactly match the versions in the repository's `requirements.lock.txt`. This should be considered when reproducing the experiment in another environment.
 
+### Scaler Version Compatibility
+
+The notebook's saved scaler-loading output reported that `scaler.pkl` was
+saved using scikit-learn 1.9.1 but was loaded in an environment using
+scikit-learn 1.6.1. This produced an `InconsistentVersionWarning`.
+Although the scaler loaded and reported 46 features, the version mismatch
+may affect compatibility. Reproduction should use a consistent
+scikit-learn version. The scaler should not be refitted or replaced
+without team approval.
+
 ### Notes and Limitations
 
 - All four models were trained and saved in the reproduction output folder in Google Drive.
